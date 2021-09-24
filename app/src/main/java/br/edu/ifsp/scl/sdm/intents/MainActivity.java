@@ -35,11 +35,11 @@ public class MainActivity extends AppCompatActivity  {
         activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(activityMainBinding.getRoot());
 
-        Toolbar toolbar = activityMainBinding.mainTb.appTb;
+       /* Toolbar toolbar = activityMainBinding.mainTb.appTb;
         toolbar.setTitle("Tratando Intents");
         toolbar.setSubtitle("Principais tipos");
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);*/
 
         requisicaoPermissaoActivityResultLauncher = registerForActivityResult(
                 (ActivityResultContract)(new ActivityResultContracts.RequestPermission()),
@@ -73,8 +73,9 @@ public class MainActivity extends AppCompatActivity  {
         switch(item.getItemId()) {
             case R.id.viewMi:
                 String url = activityMainBinding.parameterEt.getText().toString();
-                if (!url.contains("http://")) {
-                    url = "http://" + url;
+                if (!url.contains("http")) {
+                    String newUrl = "https://" + url;
+                    url = newUrl;
                 }
                 Intent siteIntent = new Intent("android.intent.action.VIEW", Uri.parse(url));
                 startActivity(siteIntent);
