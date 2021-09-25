@@ -1,5 +1,6 @@
 package br.edu.ifsp.scl.sdm.intents;
 
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -42,25 +44,18 @@ public class MainActivity extends AppCompatActivity  {
         setSupportActionBar(toolbar);*/
 
         requisicaoPermissaoActivityResultLauncher = registerForActivityResult(
-                (ActivityResultContract)(new ActivityResultContracts.RequestPermission()),
-                (ActivityResultCallback)(new ActivityResultCallback() {
+                new ActivityResultContracts.RequestPermission(),
+                new ActivityResultCallback<Boolean>() {
+                    @Override
+                    public void onActivityResult(Boolean result) {
+                        if(result) {
+                            requisitarPermissaoLigacao();
+                        } else {
+                            discarTelefone();
+                        }
+                    }
+                });
 
-            public void onActivityResult(Object var1) {
-                this.onActivityResult((Boolean)var1);
-            }
-
-            public final void onActivityResult(Boolean concedida) {
-                if (!concedida) {
-                    requisitarPermissaoLigacao();
-                } else {
-                    discarTelefone();
-                }
-
-            }
-        }));
-
-        //parameterTv = findViewById(R.id.parameterTv);
-        //parameterEt = findViewById(R.id.parameterEt);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -129,12 +124,12 @@ public class MainActivity extends AppCompatActivity  {
 
     private final void discarTelefone() {
         Intent discarIntent = new Intent();
-        discarIntent.setAction("android.intent.action.CALL");
+        discarIntent.setAction(Intent.ACTION_CALL);
         discarIntent.setData(Uri.parse((new StringBuilder()).append("tel: " + activityMainBinding.parameterEt.getText()).toString()));
         startActivity(discarIntent);
     }
 
     private final void requisitarPermissaoLigacao() {
-        requisicaoPermissaoActivityResultLauncher.launch("android.permission.CALL_PHONE");
+        requisicaoPermissaoActivityResultLauncher.launch(Manifest.permission.CALL_PHONE);
     }
 }
